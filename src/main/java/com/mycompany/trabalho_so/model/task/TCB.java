@@ -60,7 +60,7 @@ public class TCB extends Task { //Salva o contexto da task
     
     //===== Construtores 
     public TCB(Task t) {
-        super(t.offset, t.computation_time, t.quantum, t.period_time, t.deadline);
+        super(t.offset, t.computation_time, t.period_time, t.quantum, t.deadline);
         this.comp_time_remaining = t.computation_time;
         this.waiting_time = 0;
         this.finish_time = -1;
