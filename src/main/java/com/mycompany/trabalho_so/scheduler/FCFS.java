@@ -1,22 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.mycompany.trabalho_so.scheduler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.trabalho_so.model.simulation.SimulationConfig;
 import com.mycompany.trabalho_so.model.simulation.SimulationResult;
 import com.mycompany.trabalho_so.model.task.TCB;
 import com.mycompany.trabalho_so.model.task.Task;
 import com.mycompany.trabalho_so.queues.readyqueue.ReadyQueue;
+import com.mycompany.trabalho_so.stats.Stats;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author manoCorbas
  */
-public class FCFS extends Scheduler{
+public class FCFS extends Scheduler {
+
+    private static final Logger LOG = Logger.getLogger(FCFS.class.getName());
 
     public FCFS() {
         super(new ReadyQueue(new LinkedList<>()));
@@ -24,52 +29,66 @@ public class FCFS extends Scheduler{
 
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        config.getTasks().forEach(task -> new TCB(task)); //Transforma as tasks recebidas em TCBS
-        
+        LOG.log(Level.INFO, "Starting simulation!\n");
+
+        LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
+        ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
+
+        //Tempo inicial do loop
         int time = 0;
-        
-        while(time <= config.getSimulation_time()){
-            
-            //Itera sobre as tasks para verificar se alguma deve entrar na fila
-            for (Task t : config.getTasks()) { 
-                if(time == t.getOffset()){
-                    super.rq.addTask((TCB) t);
-                }
-                
-                //Cria-se uma nova instancia de 
-                if(time % (t.getOffset() + t.getPeriod_time()) == 0){
-                    super.rq.addTask(new TCB(t));
-                }
-            }
-            
-            if(!cpu.isBusy()){
+
+        LOG.log(Level.INFO, "Starting loop!\n");
+        while (time <= config.getSimulation_time()) {
+            LOG.log(Level.INFO, String.format("-> Instant: %d\n", time));
+
+            LOG.log(Level.INFO, "Checking for task offsets and periods\n");
+            checkForOffsetsAndPeriods(tasks, time);
+
+            if (!cpu.isBusy()) {
+                LOG.log(Level.INFO, "Selecting task in RQ\n");
                 cpu.setCurrentTask(rq.pollTask());
             }
-            
             TCB current = cpu.getCurrentTask();
-            
-            if(current == null){
+
+            LOG.log(Level.INFO, "Updating ready queue's tasks waiting times\n");
+            updateWaitingTimes();
+
+            if (current == null) {
+                LOG.log(Level.INFO, "No tasks in cpu\n");
                 time++;
                 continue;
             }
-            
-            if(!isPreemptive()){
-                cpu.compute(current, 1, time);
-            }
-            
-            if(current.isFinished()){
+
+            LOG.log(Level.INFO, String.format("Computing task -> id: %d\n", current.getId()));
+            cpu.compute(current, 1, time);
+
+            if (current.isFinished()) {
+                LOG.log(Level.INFO, String.format("Task finished -> id: %d\n", current.getId()));
                 super.finished.add(current);
             }
             time++;
         }
-        
-        
-        throw new UnsupportedOperationException("Not supported yet."); 
+        LOG.log(Level.INFO, "Loop finished!\n");
+        return Stats.calculate(tasks);
     }
 
-    @Override
-    public boolean isPreemptive() {
-        return false;
-    }
+    //Teste
+    public static void main(String[] args) throws JsonProcessingException {
 
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        // offset, ct. pt, q, d
+        tasks.add(new Task(0, 5, 14, 1, 14));
+        tasks.add(new Task(1, 2, 10, 2, 5));
+        tasks.add(new Task(3, 7, 30, 5, 40));
+        tasks.add(new Task(2, 3, 15, 3, 10));
+
+        SimulationConfig sc = new SimulationConfig(17, "FCFS", 4, tasks);
+
+        Scheduler sched = SchedulerFactory.getScheduler(sc.getScheduler_name());
+        SimulationResult sr = sched.simulate(sc);
+
+        ObjectMapper om = new ObjectMapper();
+        System.out.println(om.writerWithDefaultPrettyPrinter().writeValueAsString(sr));
+    }
 }

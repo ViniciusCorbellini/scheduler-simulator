@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.trabalho_so.CPU;
 
 import com.mycompany.trabalho_so.model.task.TCB;
@@ -21,16 +17,19 @@ public class CPU {
         this.utilization_time = 0;
     }
 
-    public void compute(TCB t, int time, int curr_time) {
-        setCurrentTask(t);
-
-        current_task.compute(time);
-
-        if (current_task.isFinished()) {
-            current_task.setFinish_time(curr_time);
-            setCurrentTask(null);
+    public void compute(TCB t, int time_units, int curr_time) {
+        if (this.current_task == null) {
+            setCurrentTask(t);
         }
 
+        current_task.compute(time_units);
+        this.utilization_time++;
+
+        if (current_task.isFinished()) {
+            //Adicionei "+1" pois notei que tasks estavam terminando um time unit mais cedo nas estatísticas
+            current_task.setFinish_time(curr_time + 1);
+            setCurrentTask(null);
+        }
     }
 
     public TCB getCurrentTask() {

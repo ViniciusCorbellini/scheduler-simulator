@@ -23,16 +23,6 @@ public class SRTF extends Scheduler{
     
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-   
-        
-        
-        
         throw new UnsupportedOperationException("Not supported yet."); 
     }
-    
-    @Override
-    public boolean isPreemptive() {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
-
 }

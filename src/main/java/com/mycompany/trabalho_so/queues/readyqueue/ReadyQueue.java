@@ -1,7 +1,6 @@
 package com.mycompany.trabalho_so.queues.readyqueue;
 
 import com.mycompany.trabalho_so.model.task.TCB;
-import com.mycompany.trabalho_so.model.task.Task;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;

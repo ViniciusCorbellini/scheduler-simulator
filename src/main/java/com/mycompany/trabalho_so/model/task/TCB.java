@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.trabalho_so.model.task;
 
 /**
@@ -10,6 +6,7 @@ package com.mycompany.trabalho_so.model.task;
  */
 public class TCB extends Task { //Salva o contexto da task
 
+    private int id;    
     private int comp_time_remaining;    
     private int waiting_time;
     private int finish_time;
@@ -59,8 +56,9 @@ public class TCB extends Task { //Salva o contexto da task
     }
     
     //===== Construtores 
-    public TCB(Task t) {
+    public TCB(int id, Task t) {
         super(t.offset, t.computation_time, t.period_time, t.quantum, t.deadline);
+        this.id = id;
         this.comp_time_remaining = t.computation_time;
         this.waiting_time = 0;
         this.finish_time = -1;
@@ -69,15 +67,24 @@ public class TCB extends Task { //Salva o contexto da task
     //===== Getters, setters  e toString()
     @Override
     public String toString() {
-        return "TCB{" 
-                + "\ncomp_time_remaining: " + comp_time_remaining 
-                + "\n, waiting_time: " + waiting_time 
-                + "\n, finish_time: " + finish_time 
-                + "\n,offset: " + offset 
-                + "\n, computation_time: " + computation_time 
-                + "\n, quantum: " + quantum 
-                + "\n, period_time: " + period_time 
+        return "TCB{"
+                + "id: " + id
+                + ", comp_time_remaining: " + comp_time_remaining 
+                + ", waiting_time: " + waiting_time 
+                + ", finish_time: " + finish_time 
+                + ", offset: " + offset 
+                + ", computation_time: " + computation_time 
+                + ", quantum: " + quantum 
+                + ", period_time: " + period_time 
                 + '}';
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     public int getComp_time_remaining() {
