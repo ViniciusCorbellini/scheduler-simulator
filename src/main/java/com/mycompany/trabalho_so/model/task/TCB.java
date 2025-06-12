@@ -10,7 +10,6 @@ public class TCB extends Task { //Salva o contexto da task
     private int comp_time_remaining;    
     private int waiting_time;
     private int finish_time;
-    private int priority;
     
     //===== metodos do TCB
     /**
@@ -48,11 +47,11 @@ public class TCB extends Task { //Salva o contexto da task
     /**
      * metodo para descobrir se a tarefa sofreu starvation
      * 
-     * @return true se o tempo de finalizacao da excecucao for igual a -1 (valor 
-     * instanciado no construtor do TCB)
+     * @return true se o tempo de excecucao restante for igual ao tempo inicial 
+     * de CT (tarefas que nao entraram na CPU possuirao CTs iguais ao CT restante)
      */
     public boolean isInStarvation(){
-        return this.finish_time == -1;
+        return this.comp_time_remaining == computation_time;
     }
     
     //===== Construtores 
@@ -109,13 +108,5 @@ public class TCB extends Task { //Salva o contexto da task
 
     public void setFinish_time(int finish_time) {
         this.finish_time = finish_time;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 }

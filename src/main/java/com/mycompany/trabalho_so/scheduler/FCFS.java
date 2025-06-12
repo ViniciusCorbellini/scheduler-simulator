@@ -69,7 +69,7 @@ public class FCFS extends Scheduler {
             time++;
         }
         LOG.log(Level.INFO, "Loop finished!\n");
-        return Stats.calculate(tasks);
+        return Stats.calculate(tasks, super.cpu, config.getSimulation_time(), super.finished);
     }
 
     //Teste

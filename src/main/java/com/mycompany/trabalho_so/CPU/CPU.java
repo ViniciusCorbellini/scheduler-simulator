@@ -40,6 +40,10 @@ public class CPU {
         this.current_task = t;
     }
 
+    public int getUtilization_time() {
+        return utilization_time;
+    }
+
     public boolean isBusy() {
         return this.current_task != null;
     }
