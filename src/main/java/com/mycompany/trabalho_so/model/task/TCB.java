@@ -8,6 +8,7 @@ public class TCB extends Task { //Salva o contexto da task
 
     private int id;    
     private int comp_time_remaining;    
+    private int quantum_time_remaining;
     private int waiting_time;
     private int finish_time;
     
@@ -54,11 +55,24 @@ public class TCB extends Task { //Salva o contexto da task
         return this.comp_time_remaining == computation_time;
     }
     
+    public boolean quantumTimeFinished(){
+        return this.quantum_time_remaining == 0;
+    }
+    
+    public void decrementQuantumRemaining(){
+        this.quantum_time_remaining--;
+    }
+    
+    public void resetQuantumTime(){
+        this.quantum_time_remaining = quantum;
+    }
+    
     //===== Construtores 
     public TCB(int id, Task t) {
         super(t.offset, t.computation_time, t.period_time, t.quantum, t.deadline);
         this.id = id;
         this.comp_time_remaining = t.computation_time;
+        this.quantum_time_remaining = t.quantum;
         this.waiting_time = 0;
         this.finish_time = -1;
     }
@@ -92,6 +106,14 @@ public class TCB extends Task { //Salva o contexto da task
 
     public void setComp_time_remaining(int comp_time_remaining) {
         this.comp_time_remaining = comp_time_remaining;
+    }
+    
+    public int getQuantum_time_remaining() {
+        return quantum_time_remaining;
+    }
+
+    public void setQuantum_time_remaining(int quantum_time_remaining) {
+        this.quantum_time_remaining = quantum_time_remaining;
     }
 
     public int getWaiting_time() {

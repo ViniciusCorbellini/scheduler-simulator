@@ -1,4 +1,3 @@
-com\mycompany\trabalho_so\queues\priority_queue\LinkedList.class
 com\mycompany\trabalho_so\scheduler\FCFS.class
 com\mycompany\trabalho_so\scheduler\RR.class
 com\mycompany\trabalho_so\scheduler\Scheduler.class
@@ -7,12 +6,10 @@ com\mycompany\trabalho_so\model\task\TCB.class
 com\mycompany\trabalho_so\scheduler\SRTF.class
 com\mycompany\trabalho_so\model\simulation\SimulationConfig.class
 com\mycompany\trabalho_so\Trabalho_so.class
+com\mycompany\trabalho_so\queues\readyqueue\ReadyQueue.class
+com\mycompany\trabalho_so\stats\Stats.class
 com\mycompany\trabalho_so\model\simulation\SimulationResult.class
-com\mycompany\trabalho_so\scheduler\queues\priority_queue\Queue.class
 com\mycompany\trabalho_so\model\task\Task.class
 com\mycompany\trabalho_so\scheduler\SchedulerFactory.class
-com\mycompany\trabalho_so\queues\priority_queue\ReadyQueue.class
 com\mycompany\trabalho_so\CPU\CPU.class
-com\mycompany\trabalho_so\queues\priority_queue\Node.class
 com\mycompany\trabalho_so\util\JsonUtil.class
-com\mycompany\trabalho_so\model\task\State.class

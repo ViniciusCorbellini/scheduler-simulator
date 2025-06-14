@@ -11,7 +11,6 @@ import com.mycompany.trabalho_so.stats.Stats;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

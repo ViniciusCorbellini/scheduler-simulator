@@ -92,4 +92,14 @@ public class ReadyQueue {
     public Queue<TCB> getQueue() {
         return queue;
     }
+
+    public void showQueue(){
+        System.out.println("Ready queue");
+        System.out.println("=================");
+        for (TCB tcb : queue) {
+            System.out.println("id: T" + tcb.getId());
+        }
+        System.out.println("=================");
+        System.out.println("");
+    }
 }

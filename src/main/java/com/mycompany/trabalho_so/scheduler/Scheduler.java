@@ -26,12 +26,12 @@ public abstract class Scheduler {
      * Logger para as classes filhas de scheduler
      */
     protected static final Logger LOG = Logger.getLogger(Scheduler.class.getName());
-    
+
     // ===== Metodo abstrato que deve ser implementado pelas classes filhas
     abstract SimulationResult simulate(SimulationConfig config);
 
     // ===== Métodos utilizaveis por todas as classes filhas
-    public ArrayList<TCB> parseTasksIntoTCBs(SimulationConfig config) {
+    protected ArrayList<TCB> parseTasksIntoTCBs(SimulationConfig config) {
         ArrayList<TCB> tasks = new ArrayList<>();
 
         //Converte as tasks em TCBS, facilitando o chaveamento de contexto
@@ -43,7 +43,7 @@ public abstract class Scheduler {
         return tasks;
     }
 
-    public void checkForOffsetsAndPeriods(ArrayList<TCB> tasks, int time) {
+    protected void checkForOffsetsAndPeriods(ArrayList<TCB> tasks, int time) {
         //Um arrayList local da funcao para ministrar 
         //novas instancias de periodos de tasks
         ArrayList<TCB> newInstances = new ArrayList<>();
@@ -51,8 +51,10 @@ public abstract class Scheduler {
         //Itera sobre as tasks para verificar se alguma deve entrar na fila
         for (TCB t : tasks) {
             //Evita que instancias desnecessarias sejam criadas
-            if(t.getPeriod_time() == -1) continue;
-            
+            if (t.getPeriod_time() == -1) {
+                continue;
+            }
+
             if (time == t.getOffset()) {
                 LOG.log(Level.INFO, String.format("Task offset -> instant: %d, task id: %d\n", t.getOffset(), t.getId()));
                 rq.addTask(t);
@@ -60,19 +62,20 @@ public abstract class Scheduler {
             }
             if ((time - t.getOffset()) % t.getPeriod_time() == 0) {
                 LOG.log(Level.INFO, String.format("Task period -> instant: %s, task id: %d\n", (t.getOffset() + t.getPeriod_time()), t.getId()));
-
-                //Ministra uma nova instancia de uma task:
-                //O arrayList Adciona uma nova TCB, passando como parametro do construtor
-                //da TCB o id da task, o time, ct, -1, quantum e deadline.
-                //(Obs: o -1 impede que seja criada uma nova instancia de uma task 
-                //com base no periodo de uma instancia de uma task já existente)
-                //Dessa maneira, é possível usar todos esses dados da task sem interferir
-                //Nos atributos da TCB
+                /**
+                 * Ministra uma nova instancia de uma task: O arrayList Adciona
+                 * uma nova TCB, passando como parametro do construtor da TCB o
+                 * id da task, o time, ct, -1, quantum e deadline. (Obs: o -1
+                 * impede que seja criada uma nova instancia de uma task com
+                 * base no periodo de uma instancia de uma task já existente)
+                 * Dessa maneira, é possível usar todos esses dados da task sem
+                 * interferir Nos atributos da TCB
+                 */
                 TCB newInstance = new TCB(t.getId(),
                         new Task(
-                                time, //O instante de entrada na RQ
+                                time, //O instante de entrada na RQ (offset)
                                 t.getComputation_time(),
-                                -1, 
+                                -1,
                                 t.getQuantum(),
                                 t.getDeadline()
                         )
@@ -86,18 +89,38 @@ public abstract class Scheduler {
         tasks.addAll(newInstances);
     }
 
-    public void updateWaitingTimes() {
+    protected void updateWaitingTimes() {
         //Itera sobre as tasks na ready queue para aumentar o waiting time das mesmas
         for (TCB t : rq.getQueue()) {
             t.setWaiting_time(t.getWaiting_time() + 1);
         }
     }
-    
+
+    protected void getTaskFromRQ() {
+        if (cpu.isBusy()) {
+            return;
+        }
+
+        LOG.log(Level.INFO, "Selecting task in RQ\n");
+        rq.showQueue();
+        cpu.setCurrentTask(rq.pollTask());
+    }
+
+    protected void checkIfFinished(TCB current) {
+        if (current.isFinished()) {
+            LOG.log(Level.INFO, String.format("Task finished -> id: %d\n", current.getId()));
+            LOG.log(Level.INFO, String.format("Adding task to finished and removing it from CPU-> id: %d\n", current.getId()));
+
+            cpu.setCurrentTask(null);
+            finished.add(current);
+        }
+    }
+
     // ===== Atributos
     protected ReadyQueue rq;
     protected CPU cpu;
     protected List<TCB> finished;
-    
+
     // ===== Construtor
     public Scheduler(ReadyQueue rq) {
         this.rq = rq;
@@ -105,9 +128,15 @@ public abstract class Scheduler {
         this.finished = new ArrayList<>();
     }
 
-    public ReadyQueue getRq() {return rq;}
+    public ReadyQueue getRq() {
+        return rq;
+    }
 
-    public CPU getCpu() {return cpu;}
-    
-    public List<TCB> getFinished() {return finished;}
+    public CPU getCpu() {
+        return cpu;
+    }
+
+    public List<TCB> getFinished() {
+        return finished;
+    }
 }
