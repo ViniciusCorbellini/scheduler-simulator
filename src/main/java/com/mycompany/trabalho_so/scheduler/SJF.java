@@ -31,13 +31,11 @@ public class SJF extends Scheduler{
     @Override
     public SimulationResult simulate(SimulationConfig config) {
         LOG.log(Level.INFO, "Starting simulation!\n");
-
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 
         //Tempo inicial do loop
         int time = 0;
-
         LOG.log(Level.INFO, "Starting loop!\n");
         while (time <= config.getSimulation_time()) {
             LOG.log(Level.INFO, String.format("-> Instant: %d\n", time));
@@ -45,10 +43,7 @@ public class SJF extends Scheduler{
             LOG.log(Level.INFO, "Checking for task offsets and periods\n");
             checkForOffsetsAndPeriods(tasks, time);
 
-            if (!cpu.isBusy()) {
-                LOG.log(Level.INFO, "Selecting task in RQ\n");
-                cpu.setCurrentTask(rq.pollTask());
-            }
+            super.getTaskFromRQ();
             TCB current = cpu.getCurrentTask();
 
             LOG.log(Level.INFO, "Updating ready queue's tasks waiting times\n");
@@ -63,10 +58,7 @@ public class SJF extends Scheduler{
             LOG.log(Level.INFO, String.format("Computing task -> id: %d\n", current.getId()));
             cpu.compute(current, 1, time);
 
-            if (current.isFinished()) {
-                LOG.log(Level.INFO, String.format("Task finished -> id: %d\n", current.getId()));
-                super.finished.add(current);
-            }
+            super.checkIfFinished(current);
             time++;
         }
         LOG.log(Level.INFO, "Loop finished!\n");

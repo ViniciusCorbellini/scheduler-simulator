@@ -48,7 +48,7 @@ public class RR extends Scheduler {
                 continue;
             }
 
-            LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()));
+            LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d, qt remaining: %d\n", current.getId(), current.getComp_time_remaining(), current.getQuantum_time_remaining()));
             cpu.compute(current, 1, time);
             
             current.decrementQuantumRemaining();
@@ -63,18 +63,18 @@ public class RR extends Scheduler {
 
     private void checkQuantumTime(TCB current) {
         if (current.quantumTimeFinished()) {
-            LOG.log(Level.INFO, String.format("Quantum time ended, removing task from -> task id: %d\n", current.getId()));
+            LOG.log(Level.INFO, String.format("Quantum time ended, removing task from CPU -> task id: %d\n", current.getId()));
             cpu.setCurrentTask(null);
             current.resetQuantumTime();
             
             //Garante que tarefas cujo qt acabou mas ainda nao terminaram seu ct vao para a rq
             if(!current.isFinished()){ 
+                LOG.log(Level.INFO, String.format("Task not finished yet, adding it back to rq- > task id: %d\n", current.getId()));
                 super.rq.addTask(current);
-                rq.showQueue();
             }
         } else{
             LOG.log(Level.INFO, String.format(
-                    "Quantum time did not end, keeping task in cpu -> task id: %d // ct remaining: %d\n", current.getId(), current.getComp_time_remaining()
+                    "Quantum time did not end, keeping task in cpu -> task id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()
             ));
         }
     }
@@ -90,7 +90,7 @@ public class RR extends Scheduler {
         tasks.add(new Task(3, 7, 30, 5, 40));
         tasks.add(new Task(2, 3, 15, 3, 10));
 
-        SimulationConfig sc = new SimulationConfig(19, "RR", 4, tasks);
+        SimulationConfig sc = new SimulationConfig(23, "RR", 4, tasks);
 
         Scheduler sched = SchedulerFactory.getScheduler(sc.getScheduler_name());
         SimulationResult sr = sched.simulate(sc);

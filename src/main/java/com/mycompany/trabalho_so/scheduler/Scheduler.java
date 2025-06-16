@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package com.mycompany.trabalho_so.scheduler;
 
 import com.mycompany.trabalho_so.CPU.CPU;
@@ -34,7 +30,7 @@ public abstract class Scheduler {
     protected ArrayList<TCB> parseTasksIntoTCBs(SimulationConfig config) {
         ArrayList<TCB> tasks = new ArrayList<>();
 
-        //Converte as tasks em TCBS, facilitando o chaveamento de contexto
+        //Converte as tasks em TCBS com id, facilitando o chaveamento de contexto
         AtomicInteger id = new AtomicInteger(1); //A funcao lambda nao aceita um int normal
         config.getTasks()
                 .forEach(
