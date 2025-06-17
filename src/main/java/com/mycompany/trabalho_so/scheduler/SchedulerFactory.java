@@ -1,10 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.trabalho_so.scheduler;
-
-import com.mycompany.trabalho_so.scheduler.Scheduler;
 
 /**
  *
@@ -25,6 +19,9 @@ public class SchedulerFactory {
             }
             case "SJF" -> {
                 return new SJF();
+            }
+            case "SRTF" -> {
+                return new SRTF();
             }
             default ->
                 throw new AssertionError();

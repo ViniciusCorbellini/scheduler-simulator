@@ -102,6 +102,15 @@ public abstract class Scheduler {
         cpu.setCurrentTask(rq.pollTask());
     }
 
+    //Pega a task da cpu, coloca ela na rq e remove ela da cpu
+    protected void preemptiveRemoval() {
+        TCB current = cpu.getCurrentTask();
+        if(current == null) return;
+        
+        rq.addTask(current);
+        cpu.setCurrentTask(null);
+    }
+    
     protected void checkIfFinished(TCB current) {
         if (current.isFinished()) {
             LOG.log(Level.INFO, String.format("Task finished -> id: %d\n", current.getId()));
