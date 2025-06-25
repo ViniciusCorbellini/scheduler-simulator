@@ -50,7 +50,7 @@ public class SRTF extends Scheduler{
                 continue;
             }
 
-            LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d, qt remaining: %d\n", current.getId(), current.getComp_time_remaining(), current.getQuantum_time_remaining()));
+            LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()));
             cpu.compute(current, 1, time);
             
             super.checkIfFinished(current);
@@ -58,7 +58,7 @@ public class SRTF extends Scheduler{
             time++;
         }
         LOG.log(Level.INFO, "Loop finished!\n");
-        return Stats.calculate(tasks, super.cpu, config.getSimulation_time(), super.finished);
+        return Stats.calculate(tasks, super.cpu, config.getSimulation_time() + 1, super.finished);
     }
     
     //Teste
@@ -71,7 +71,7 @@ public class SRTF extends Scheduler{
         tasks.add(new Task(3, 7, 30, 5, 40));
         tasks.add(new Task(2, 3, 15, 3, 10));
 
-        SimulationConfig sc = new SimulationConfig(23, "SRTF", 4, tasks);
+        SimulationConfig sc = new SimulationConfig(19, "SRTF", 4, tasks);
 
         Scheduler sched = SchedulerFactory.getScheduler(sc.getScheduler_name());
         SimulationResult sr = sched.simulate(sc);

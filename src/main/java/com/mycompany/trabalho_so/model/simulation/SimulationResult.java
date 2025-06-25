@@ -32,6 +32,14 @@ public class SimulationResult {
         this.starvation = starvation;
         this.priority_invertion = priority_invertion;
     }
+
+    public float getUtilization() {
+        return utilization;
+    }
+
+    public void setUtilization(float utilization) {
+        this.utilization = utilization;
+    }
     
     public Map<Task, Integer> getTurnaround_times() {return turnaround_times;}
 

@@ -50,7 +50,6 @@ public abstract class Scheduler {
             if (t.getPeriod_time() == -1) {
                 continue;
             }
-
             if (time == t.getOffset()) {
                 LOG.log(Level.INFO, String.format("Task offset -> instant: %d, task id: %d\n", t.getOffset(), t.getId()));
                 rq.addTask(t);
@@ -98,7 +97,6 @@ public abstract class Scheduler {
         }
 
         LOG.log(Level.INFO, "Selecting task in RQ\n");
-        rq.showQueue();
         cpu.setCurrentTask(rq.pollTask());
     }
 
