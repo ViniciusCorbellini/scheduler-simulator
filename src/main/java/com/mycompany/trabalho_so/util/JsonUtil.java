@@ -1,7 +1,6 @@
 package com.mycompany.trabalho_so.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mycompany.trabalho_so.model.simulation.SimulationConfig;
 import com.mycompany.trabalho_so.scheduler.Scheduler;
 import com.mycompany.trabalho_so.scheduler.SchedulerFactory;
@@ -20,23 +19,12 @@ public class JsonUtil {
         return SchedulerFactory.getScheduler(sc.getScheduler_name());
     }
 
-    public static SimulationConfig getSimConfigFromJson(InputStream inputStream) throws IOException {
+    public static SimulationConfig getSimConfigFromJson() throws IOException {
+        String relativePath = "src/main/java/com/mycompany/trabalho_so/util/SimConfig.json";
+        InputStream inputStream = new FileInputStream(relativePath);
+        
         ObjectMapper om = new ObjectMapper();
         InputStreamReader isr = new InputStreamReader(inputStream);
         return om.readValue(isr, SimulationConfig.class);
-    }
-
-    public static void main(String[] args) {
-        try {
-            String relativePath = "src/main/java/com/mycompany/trabalho_so/util/SimConfig.json";
-            InputStream inputStream = new FileInputStream(relativePath);
-
-            ObjectMapper om = new JsonMapper();
-            SimulationConfig sc = getSimConfigFromJson(inputStream);
-            System.out.println(om.writerWithDefaultPrettyPrinter().writeValueAsString(sc));
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-
     }
 }

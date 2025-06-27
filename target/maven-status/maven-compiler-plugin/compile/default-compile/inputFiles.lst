@@ -1,9 +1,11 @@
+C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\scheduler\RM.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\util\JsonUtil.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\model\task\Task.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\CPU\CPU.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\scheduler\FCFS.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\scheduler\SchedulerFactory.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\Trabalho_so.java
+C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\scheduler\EDF.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\model\simulation\SimulationResult.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\scheduler\SJF.java
 C:\Users\Cliente\Documents\NetBeansProjects\trabalho_so\src\main\java\com\mycompany\trabalho_so\model\task\TCB.java

@@ -24,7 +24,7 @@ public abstract class Scheduler {
     protected static final Logger LOG = Logger.getLogger(Scheduler.class.getName());
 
     // ===== Metodo abstrato que deve ser implementado pelas classes filhas
-    abstract SimulationResult simulate(SimulationConfig config);
+    public abstract SimulationResult simulate(SimulationConfig config);
 
     // ===== Métodos utilizaveis por todas as classes filhas
     protected ArrayList<TCB> parseTasksIntoTCBs(SimulationConfig config) {

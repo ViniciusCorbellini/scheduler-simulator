@@ -11,6 +11,7 @@ public class TCB extends Task { //Salva o contexto da task
     private int quantum_time_remaining;
     private int waiting_time;
     private int finish_time;
+    private int abolute_deadline;
     
     //===== metodos do TCB
     /**
@@ -66,6 +67,10 @@ public class TCB extends Task { //Salva o contexto da task
     public void resetQuantumTime(){
         this.quantum_time_remaining = quantum;
     }
+
+    final public int getAbolute_deadline() {
+        return super.getOffset() + super.getDeadline();
+    }
     
     //===== Construtores 
     public TCB(int id, Task t) {
@@ -75,6 +80,7 @@ public class TCB extends Task { //Salva o contexto da task
         this.quantum_time_remaining = t.quantum;
         this.waiting_time = 0;
         this.finish_time = -1;
+        this.abolute_deadline = getAbolute_deadline();
     }
 
     //===== Getters, setters  e toString()

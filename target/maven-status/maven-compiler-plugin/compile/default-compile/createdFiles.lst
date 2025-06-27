@@ -11,5 +11,7 @@ com\mycompany\trabalho_so\stats\Stats.class
 com\mycompany\trabalho_so\model\simulation\SimulationResult.class
 com\mycompany\trabalho_so\model\task\Task.class
 com\mycompany\trabalho_so\scheduler\SchedulerFactory.class
+com\mycompany\trabalho_so\scheduler\RM.class
 com\mycompany\trabalho_so\CPU\CPU.class
+com\mycompany\trabalho_so\scheduler\EDF.class
 com\mycompany\trabalho_so\util\JsonUtil.class
