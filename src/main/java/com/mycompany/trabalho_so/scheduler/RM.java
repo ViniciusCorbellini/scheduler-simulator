@@ -25,7 +25,10 @@ public class RM extends Scheduler{
         LOG.log(Level.INFO, "Starting simulation!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
-
+        
+        LOG.log(Level.INFO, "Handling JSON config file inconsistencies\n");
+        super.handleDeadlineCoherence(tasks);
+        
         //Tempo inicial do loop
         int time = 0;
         LOG.log(Level.INFO, "Starting loop!\n");

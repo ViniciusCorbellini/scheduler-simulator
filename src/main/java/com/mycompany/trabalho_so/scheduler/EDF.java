@@ -15,15 +15,19 @@ import java.util.logging.Level;
  * @author Vinicius Corbellini
  */
 public class EDF extends Scheduler {
+
     public EDF() {
         super(new ReadyQueue(Comparator.comparing(TCB::getAbolute_deadline)));
     }
-    
+
     @Override
     public SimulationResult simulate(SimulationConfig config) {
         LOG.log(Level.INFO, "Starting simulation!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
+
+        LOG.log(Level.INFO, "Handling JSON config file inconsistencies\n");
+        super.handleDeadlineCoherence(tasks);
 
         //Tempo inicial do loop
         int time = 0;
@@ -48,7 +52,7 @@ public class EDF extends Scheduler {
 
             LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()));
             cpu.compute(current, 1, time);
-            
+
             super.checkIfFinished(current);
             super.preemptiveRemoval();
             time++;

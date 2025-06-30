@@ -103,12 +103,14 @@ public abstract class Scheduler {
     //Pega a task da cpu, coloca ela na rq e remove ela da cpu
     protected void preemptiveRemoval() {
         TCB current = cpu.getCurrentTask();
-        if(current == null) return;
-        
+        if (current == null) {
+            return;
+        }
+
         rq.addTask(current);
         cpu.setCurrentTask(null);
     }
-    
+
     protected void checkIfFinished(TCB current) {
         if (current.isFinished()) {
             LOG.log(Level.INFO, String.format("Task finished -> id: %d\n", current.getId()));
@@ -117,6 +119,13 @@ public abstract class Scheduler {
             cpu.setCurrentTask(null);
             finished.add(current);
         }
+    }
+
+    //Funcao necessaria para RM e EDFs, no qual o periodo deve, obrigatoriamente ser igual ao Deadline
+    protected void handleDeadlineCoherence(ArrayList<TCB> tasks) {
+        tasks.forEach(
+                t -> t.setDeadline(t.getPeriod_time())
+        );
     }
 
     // ===== Atributos

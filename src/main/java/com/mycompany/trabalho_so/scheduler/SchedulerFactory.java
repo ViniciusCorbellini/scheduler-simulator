@@ -14,14 +14,20 @@ public class SchedulerFactory {
             case "FIFO" -> {
                 return new FCFS();
             }
-            case "RR" -> {
-                return new RR();
-            }
             case "SJF" -> {
                 return new SJF();
             }
+            case "RR" -> {
+                return new RR();
+            }
             case "SRTF" -> {
                 return new SRTF();
+            }
+            case "RM" -> {
+                return new RM();
+            }
+            case "EDF" -> {
+                return new EDF();
             }
             default ->
                 throw new AssertionError();

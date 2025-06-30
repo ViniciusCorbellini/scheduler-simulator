@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.trabalho_so.stats;
 
 import com.mycompany.trabalho_so.CPU.CPU;
@@ -86,7 +82,7 @@ public class Stats {
     private static Task getHighestWt(List<TCB> tasks) {
         TCB highest = tasks.get(0);
         for (TCB t : tasks) {
-            if (t.getWaiting_time() > highest.getWaiting_time()) {
+            if (t.getWaiting_time() > highest.getWaiting_time() && t.getFinish_time() != -1) {
                 highest = t;
             }
         }
@@ -96,7 +92,7 @@ public class Stats {
     private static Task getLowestWt(List<TCB> tasks) {
         TCB lowest = tasks.get(0);
         for (TCB t : tasks) {
-            if (t.getWaiting_time() < lowest.getWaiting_time()) {
+            if (t.getWaiting_time() < lowest.getWaiting_time() && t.getFinish_time() != -1) {
                 lowest = t;
             }
         }
