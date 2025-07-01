@@ -34,6 +34,12 @@ public class Stats {
 
         return new SimulationResult(utilization, turnaround_times, turnaround_time_avg, waiting_times, waiting_time_avg, highest_wt, lowest_wt, starvation, missed_deadline, deadline_miss_ratio);
     }
+    
+    public static SimulationResult calculate(ArrayList<TCB> tasks, CPU cpu, int time, List<TCB> finished, boolean isSchedulable) {
+        SimulationResult sr = calculate(tasks, cpu, time, finished);
+        sr.setIsSchedulable(isSchedulable);
+        return sr;
+    }
 
     private static Map<Task, Integer> getTurnaroundTimes(List<TCB> tasks) {
         Map<Task, Integer> ans = new LinkedHashMap<>();

@@ -7,6 +7,7 @@ import com.mycompany.trabalho_so.model.task.TCB;
 import com.mycompany.trabalho_so.model.task.Task;
 import com.mycompany.trabalho_so.queues.readyqueue.ReadyQueue;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -56,7 +57,7 @@ public abstract class Scheduler {
                 continue;
             }
             if ((time - t.getOffset()) % t.getPeriod_time() == 0) {
-                LOG.log(Level.INFO, String.format("Task period -> instant: %s, task id: %d\n", (t.getOffset() + t.getPeriod_time()), t.getId()));
+                LOG.log(Level.INFO, String.format("Task period -> task id: %d\n", t.getId()));
                 /**
                  * Ministra uma nova instancia de uma task: O arrayList Adciona
                  * uma nova TCB, passando como parametro do construtor da TCB o
@@ -128,10 +129,22 @@ public abstract class Scheduler {
         );
     }
 
-    protected void checkForDeadlineMiss(TCB task, int currentTime) {
-        if (task.getAbolute_deadline() <= currentTime && !task.isFinished()) {
-            LOG.log(Level.WARNING, String.format("Deadline missed -> Task id: %d, at time: %d\n", task.getId(), currentTime));
-            task.setDeadline_miss_instant(currentTime);
+    protected void checkForDeadlineMiss(int currentTime, ArrayList<TCB> tasks) {
+        Iterator<TCB> iterator = rq.getQueue().iterator();
+        while (iterator.hasNext()) {
+            TCB task = iterator.next();
+            if (task.getAbolute_deadline() <= currentTime && !task.isFinished()) {
+                LOG.log(Level.WARNING, String.format("Deadline missed -> Task id: %d, at time: %d\n", task.getId(), currentTime));
+                task.setDeadline_miss_instant(currentTime);
+                iterator.remove(); // Optei por usar iterator para nao dar ConcurrentModificationException
+            }
+        }
+
+        // Verifica a task atual na CPU
+        TCB current = cpu.getCurrentTask();
+        if (current != null && current.getAbolute_deadline() <= currentTime && !current.isFinished()) {
+            LOG.log(Level.WARNING, String.format("Deadline missed -> Task id: %d, at time: %d\n", current.getId(), currentTime));
+            current.setDeadline_miss_instant(currentTime);
             cpu.setCurrentTask(null);
         }
     }

@@ -21,6 +21,7 @@ public class SimulationResult {
     private List<Task> starvation;
     private List<Task> missed_deadline;
     private Map<Integer, Float> deadline_miss_ratio;
+    private boolean isSchedulable;
 
     public SimulationResult(float utilization, Map<Task, Integer> turnaround_times, float turnaround_time_avg, Map<Task, Integer> waiting_times, float waiting_time_avg, Task highest_wt, Task lowest_wt, List<Task> starvation, List<Task> missed_deadline, Map<Integer, Float> deadline_miss_ratio) {
         this.utilization = utilization;
@@ -75,4 +76,7 @@ public class SimulationResult {
 
     public void setDeadline_miss_ratio(Map<Integer, Float> deadline_miss_ratio) {this.deadline_miss_ratio = deadline_miss_ratio;}
 
+    public boolean isIsSchedulable() {return isSchedulable;}
+
+    public void setIsSchedulable(boolean isSchedulable) {this.isSchedulable = isSchedulable;}
 }
