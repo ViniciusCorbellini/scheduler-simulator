@@ -3,7 +3,6 @@ package com.mycompany.trabalho_so.stats;
 import com.mycompany.trabalho_so.CPU.CPU;
 import com.mycompany.trabalho_so.model.simulation.SimulationResult;
 import com.mycompany.trabalho_so.model.task.TCB;
-import com.mycompany.trabalho_so.model.task.Task;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,16 +26,23 @@ public class Stats {
         Map<TCB, Integer> waiting_times = getWaitingTimes(finished);
         float waiting_time_avg = calculateWTavg(waiting_times);
 
-        Task highest_wt = getHighestWt(tasks);
-        Task lowest_wt = getLowestWt(tasks);
+        Map<Integer, Float> tasks_tatAvg = calculateAvgTATById(turnaround_times);
+        Map<Integer, Float> tasks_wtAvg = calculateWTavgById(waiting_times);
+
+        int id_highest_wt_avg = getHighestWt(tasks_wtAvg);
+        int id_lowest_wt_avg = getLowestWt(tasks_wtAvg);
 
         List<TCB> starvation = checkForStarvation(tasks);
         List<TCB> missed_deadline = missedDeadlines(tasks);
         LinkedHashMap<Integer, Float> deadline_miss_ratio = calculateDeadlineMissRatio(tasks);
 
         sortSimulationResults(turnaround_times, waiting_times, starvation, missed_deadline, deadline_miss_ratio);
-        
-        return new SimulationResult(utilization, turnaround_times, turnaround_time_avg, waiting_times, waiting_time_avg, highest_wt, lowest_wt, starvation, missed_deadline, deadline_miss_ratio);
+
+        return new SimulationResult(utilization, turnaround_times,
+                turnaround_time_avg, waiting_times, waiting_time_avg,
+                id_highest_wt_avg, id_lowest_wt_avg, starvation, missed_deadline,
+                deadline_miss_ratio, tasks_wtAvg, tasks_tatAvg
+        );
     }
 
     public static SimulationResult calculate(ArrayList<TCB> tasks, CPU cpu, int time, List<TCB> finished, boolean isSchedulable) {
@@ -71,6 +77,33 @@ public class Stats {
         return (float) sum / count;
     }
 
+    private static Map<Integer, Float> calculateAvgTATById(Map<TCB, Integer> turnaround_times) {
+        Map<Integer, List<Integer>> tatGroupedById = new HashMap<>();
+
+        for (Map.Entry<TCB, Integer> entry : turnaround_times.entrySet()) {
+            int id = entry.getKey().getId();
+            int tat = entry.getValue();
+
+            if (tat != -1) {
+                tatGroupedById
+                        .computeIfAbsent(id, k -> new ArrayList<>())
+                        .add(tat);
+            }
+        }
+
+        Map<Integer, Float> avgTatById = new LinkedHashMap<>(); // Mantém a ordem de inserção, se quiser ordem por ID, podemos ordenar depois
+        for (Map.Entry<Integer, List<Integer>> entry : tatGroupedById.entrySet()) {
+            List<Integer> tatList = entry.getValue();
+            float sum = 0;
+            for (int tat : tatList) {
+                sum += tat;
+            }
+            avgTatById.put(entry.getKey(), sum / tatList.size());
+        }
+
+        return avgTatById;
+    }
+
     private static Map<TCB, Integer> getWaitingTimes(List<TCB> tasks) {
         Map<TCB, Integer> ans = new LinkedHashMap<>();
 
@@ -93,24 +126,50 @@ public class Stats {
         return (float) sum / size;
     }
 
-    private static Task getHighestWt(List<TCB> tasks) {
-        TCB highest = tasks.get(0);
-        for (TCB t : tasks) {
-            if (t.getWaiting_time() > highest.getWaiting_time() && t.getFinish_time() != -1) {
-                highest = t;
-            }
+    private static Map<Integer, Float> calculateWTavgById(Map<TCB, Integer> waiting_times) {
+        Map<Integer, List<Integer>> wtGroupedById = new HashMap<>();
+
+        for (Map.Entry<TCB, Integer> entry : waiting_times.entrySet()) {
+            int id = entry.getKey().getId();
+            int wt = entry.getValue();
+
+            wtGroupedById.computeIfAbsent(id, k -> new ArrayList<>()).add(wt);
         }
-        return highest;
+
+        Map<Integer, Float> avgWTById = new LinkedHashMap<>();
+        for (Map.Entry<Integer, List<Integer>> entry : wtGroupedById.entrySet()) {
+            List<Integer> list = entry.getValue();
+            float avg = (float) list.stream().mapToInt(Integer::intValue).sum() / list.size();
+            avgWTById.put(entry.getKey(), avg);
+        }
+
+        return avgWTById;
     }
 
-    private static Task getLowestWt(List<TCB> tasks) {
-        TCB lowest = tasks.get(0);
-        for (TCB t : tasks) {
-            if (t.getWaiting_time() < lowest.getWaiting_time() && t.getFinish_time() != -1) {
-                lowest = t;
+    private static int getHighestWt(Map<Integer, Float> tasks_wtAvg) {
+        int highestId = -1;
+        float highestWT = Float.MIN_VALUE;
+
+        for (Map.Entry<Integer, Float> entry : tasks_wtAvg.entrySet()) {
+            if (entry.getValue() > highestWT) {
+                highestWT = entry.getValue();
+                highestId = entry.getKey();
             }
         }
-        return lowest;
+        return highestId;
+    }
+
+    private static int getLowestWt(Map<Integer, Float> tasks_wtAvg) {
+        int lowestId = -1;
+        float lowestWT = Float.MAX_VALUE;
+
+        for (Map.Entry<Integer, Float> entry : tasks_wtAvg.entrySet()) {
+            if (entry.getValue() < lowestWT) {
+                lowestWT = entry.getValue();
+                lowestId = entry.getKey();
+            }
+        }
+        return lowestId;
     }
 
     private static List<TCB> checkForStarvation(List<TCB> tasks) {

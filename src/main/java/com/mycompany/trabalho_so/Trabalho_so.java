@@ -29,7 +29,6 @@ public class Trabalho_so {
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(sr)
             );
-            //wt MEDIO para cada ID
             // testar o rm
         } catch (IOException ex) {
             Logger.getLogger(Trabalho_so.class.getName()).log(Level.SEVERE, null, ex);
