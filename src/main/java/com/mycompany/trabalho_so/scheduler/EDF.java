@@ -8,6 +8,7 @@ import static com.mycompany.trabalho_so.scheduler.Scheduler.LOG;
 import com.mycompany.trabalho_so.stats.Stats;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -60,5 +61,13 @@ public class EDF extends Scheduler {
         }
         LOG.log(Level.INFO, "Loop finished!\n");
         return Stats.calculate(tasks, super.cpu, config.getSimulation_time() + 1, super.finished);
+    }
+    
+    public boolean isSchedulable(List<TCB> tasks){
+        float sum = 0;
+        for (TCB task : tasks) {
+            sum += (float) task.getComputation_time() / task.getPeriod_time();
+        }
+        return sum <= 1;
     }
 }
