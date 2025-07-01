@@ -64,24 +64,4 @@ public class SJF extends Scheduler{
         LOG.log(Level.INFO, "Loop finished!\n");
         return Stats.calculate(tasks, super.cpu, config.getSimulation_time() + 1, super.finished);
     }
-    
-    //Teste
-    public static void main(String[] args) throws JsonProcessingException {
-
-        ArrayList<Task> tasks = new ArrayList<>();
-
-        // offset, ct. pt, q, d
-        tasks.add(new Task(0, 5, 14, 1, 14));
-        tasks.add(new Task(1, 2, 10, 2, 5));
-        tasks.add(new Task(3, 7, 30, 5, 40));
-        tasks.add(new Task(2, 3, 15, 3, 10));
-
-        SimulationConfig sc = new SimulationConfig(17, "SJF", 4, tasks);
-
-        Scheduler sched = SchedulerFactory.getScheduler(sc.getScheduler_name());
-        SimulationResult sr = sched.simulate(sc);
-
-        ObjectMapper om = new ObjectMapper();
-        System.out.println(om.writerWithDefaultPrettyPrinter().writeValueAsString(sr));
-    }
 }

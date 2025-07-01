@@ -199,7 +199,9 @@ public class Stats {
         for (TCB t : tasks) {
             int id = t.getId();
 
-            totalActivations.put(id, totalActivations.getOrDefault(id, 0) + 1);
+            if (t.getFinish_time() != -1 ||  t.getDeadline_miss_instant() == -1) {
+                totalActivations.put(id, totalActivations.getOrDefault(id, 0) + 1);
+            }
 
             if (t.getDeadline_miss_instant() != -1) {
                 missedDeadlines.put(id, missedDeadlines.getOrDefault(id, 0) + 1);

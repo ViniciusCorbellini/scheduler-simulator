@@ -41,10 +41,7 @@ public class EDF extends Scheduler {
             LOG.log(Level.INFO, String.format("Simulation -> Instant: %d\n", time));
             LOG.log(Level.INFO, "Checking for task offsets and periods\n");
             super.checkForOffsetsAndPeriods(tasks, time);
-            
-            LOG.log(Level.INFO, "Checking for deadline misses\n");
-            super.checkForDeadlineMiss(time, tasks);
-            
+
             super.getTaskFromRQ();
             TCB current = cpu.getCurrentTask();
 
@@ -61,6 +58,7 @@ public class EDF extends Scheduler {
             cpu.compute(current, 1, time);
 
             super.checkIfFinished(current);
+            LOG.log(Level.INFO, "Checking for deadline misses\n");
             super.checkForDeadlineMiss(time, tasks);
             super.preemptiveRemoval();
             time++;
@@ -74,7 +72,7 @@ public class EDF extends Scheduler {
         for (TCB task : tasks) {
             sum += (float) task.getComputation_time() / task.getPeriod_time();
         }
-        
+
         LOG.info(String.format("Sum: %s\n", sum));
         return sum <= 1;
     }

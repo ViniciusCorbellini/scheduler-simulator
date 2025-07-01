@@ -41,9 +41,6 @@ public class RM extends Scheduler {
             LOG.log(Level.INFO, String.format("Simulation -> Instant: %d\n", time));
             LOG.log(Level.INFO, "Checking for task offsets and periods\n");
             super.checkForOffsetsAndPeriods(tasks, time);
-            
-            LOG.log(Level.INFO, "Checking for deadline misses\n");
-            super.checkForDeadlineMiss(time, tasks);
 
             super.getTaskFromRQ();
             TCB current = cpu.getCurrentTask();
@@ -61,8 +58,9 @@ public class RM extends Scheduler {
             cpu.compute(current, 1, time);
 
             super.checkIfFinished(current);
-            super.preemptiveRemoval();
+            LOG.log(Level.INFO, "Checking for deadline misses\n");
             super.checkForDeadlineMiss(time, tasks);
+            super.preemptiveRemoval();
             time++;
         }
         LOG.log(Level.INFO, "Loop finished!\n");
