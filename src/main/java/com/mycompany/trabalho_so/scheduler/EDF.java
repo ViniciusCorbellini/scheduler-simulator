@@ -52,8 +52,9 @@ public class EDF extends Scheduler {
 
             LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()));
             cpu.compute(current, 1, time);
-
+            
             super.checkIfFinished(current);
+            super.checkForDeadlineMiss(current, time);
             super.preemptiveRemoval();
             time++;
         }

@@ -1,6 +1,6 @@
 {
-    "simulation_time": 17,
-    "scheduler_name": "RM",
+    "simulation_time": 14,
+    "scheduler_name": "EDF",
     "tasks_number": 4,
     "tasks": [
         {

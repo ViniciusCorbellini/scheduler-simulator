@@ -23,12 +23,14 @@ public class Trabalho_so {
             SimulationResult sr = sched.simulate(sc);
 
             ObjectMapper om = new ObjectMapper();
+            System.out.println("================================================");
+            System.out.println("Results: \n");
             System.out.println(om
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(sr)
             );
-            //TODO: Verificação de perda de deadline, calculo de escalonabilidade
-            // testar o rm e edf
+            //TODO: calculo de escalonabilidade, wt MEDIO para cada ID
+            // testar o rm
         } catch (IOException ex) {
             Logger.getLogger(Trabalho_so.class.getName()).log(Level.SEVERE, null, ex);
         }

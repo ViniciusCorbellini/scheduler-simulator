@@ -11,7 +11,8 @@ public class TCB extends Task { //Salva o contexto da task
     private int quantum_time_remaining;
     private int waiting_time;
     private int finish_time;
-    private int abolute_deadline;
+    private final int abolute_deadline;
+    private int deadline_miss_instant;
     
     //===== metodos do TCB
     /**
@@ -72,7 +73,7 @@ public class TCB extends Task { //Salva o contexto da task
         return super.getOffset() + super.getDeadline();
     }
     
-    //===== Construtores 
+    //===== Construtor
     public TCB(int id, Task t) {
         super(t.offset, t.computation_time, t.period_time, t.quantum, t.deadline);
         this.id = id;
@@ -81,6 +82,7 @@ public class TCB extends Task { //Salva o contexto da task
         this.waiting_time = 0;
         this.finish_time = -1;
         this.abolute_deadline = getAbolute_deadline();
+        this.deadline_miss_instant = -1;
     }
 
     //===== Getters, setters  e toString()
@@ -136,5 +138,13 @@ public class TCB extends Task { //Salva o contexto da task
 
     public void setFinish_time(int finish_time) {
         this.finish_time = finish_time;
+    }
+
+    public int getDeadline_miss_instant() {
+        return deadline_miss_instant;
+    }
+
+    public void setDeadline_miss_instant(int deadline_miss_instant) {
+        this.deadline_miss_instant = deadline_miss_instant;
     }
 }

@@ -11,17 +11,18 @@ import com.mycompany.trabalho_so.model.task.Task;
  * @author manoCorbas
  */
 public class SimulationResult {
-    float utilization;
-    Map<Task, Integer> turnaround_times;
-    float turnaround_time_avg;
-    Map<Task, Integer> waiting_times;
-    float waiting_time_avg;
-    Task highest_wt;
-    Task lowest_wt;
-    List<Task> starvation;
-    List<Task> priority_invertion;
+    private float utilization;
+    private Map<Task, Integer> waiting_times;
+    private float waiting_time_avg;
+    private Map<Task, Integer> turnaround_times;
+    private float turnaround_time_avg;
+    private Task highest_wt;
+    private Task lowest_wt;
+    private List<Task> starvation;
+    private List<Task> missed_deadline;
+    private Map<Integer, Float> deadline_miss_ratio;
 
-    public SimulationResult(float utilization, Map<Task, Integer> turnaround_times, float turnaround_time_avg, Map<Task, Integer> waiting_times, float waiting_time_avg, Task highest_wt, Task lowest_wt, List<Task> starvation, List<Task> priority_invertion) {
+    public SimulationResult(float utilization, Map<Task, Integer> turnaround_times, float turnaround_time_avg, Map<Task, Integer> waiting_times, float waiting_time_avg, Task highest_wt, Task lowest_wt, List<Task> starvation, List<Task> missed_deadline, Map<Integer, Float> deadline_miss_ratio) {
         this.utilization = utilization;
         this.turnaround_times = turnaround_times;
         this.turnaround_time_avg = turnaround_time_avg;
@@ -30,16 +31,13 @@ public class SimulationResult {
         this.highest_wt = highest_wt;
         this.lowest_wt = lowest_wt;
         this.starvation = starvation;
-        this.priority_invertion = priority_invertion;
+        this.missed_deadline = missed_deadline;
+        this.deadline_miss_ratio = deadline_miss_ratio;
     }
 
-    public float getUtilization() {
-        return utilization;
-    }
+    public float getUtilization() {return utilization;}
 
-    public void setUtilization(float utilization) {
-        this.utilization = utilization;
-    }
+    public void setUtilization(float utilization) {this.utilization = utilization;}
     
     public Map<Task, Integer> getTurnaround_times() {return turnaround_times;}
 
@@ -69,7 +67,12 @@ public class SimulationResult {
 
     public void setStarvation(List<Task> starvation) {this.starvation = starvation;}
 
-    public List<Task> getPriority_invertion() {return priority_invertion;}
+    public List<Task> getMissed_deadline() {return missed_deadline;}
 
-    public void setPriority_invertion(List<Task> priority_invertion) {this.priority_invertion = priority_invertion;}
+    public void setMissed_deadline(List<Task> missed_deadline) {this.missed_deadline = missed_deadline;}
+
+    public Map<Integer, Float> getDeadline_miss_ratio() {return deadline_miss_ratio;}
+
+    public void setDeadline_miss_ratio(Map<Integer, Float> deadline_miss_ratio) {this.deadline_miss_ratio = deadline_miss_ratio;}
+
 }

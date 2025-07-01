@@ -6,6 +6,7 @@ import com.mycompany.trabalho_so.model.task.TCB;
 import com.mycompany.trabalho_so.model.task.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +27,16 @@ public class Stats {
 
         Task highest_wt = getHighestWt(tasks);
         Task lowest_wt = getLowestWt(tasks);
+        
         List<Task> starvation = checkForStarvation(tasks);
-        List<Task> priority_invertion;
+        List<Task> missed_deadline = missedDeadlines(tasks);
+        LinkedHashMap<Integer, Float> deadline_miss_ratio = calculateDeadlineMissRatio(tasks);
 
-        //float utilization, Map<Task, Integer> turnaround_times, float turnaround_time_avg, Map<Task, Integer> waiting_times, float waiting_time_avg, Task highest_wt, Task lowest_wt, List<Task> starvation, List<Task> priority_invertion
-        return new SimulationResult(utilization, turnaround_times, turnaround_time_avg, waiting_times, waiting_time_avg, highest_wt, lowest_wt, starvation, new ArrayList<>());
+        return new SimulationResult(utilization, turnaround_times, turnaround_time_avg, waiting_times, waiting_time_avg, highest_wt, lowest_wt, starvation, missed_deadline, deadline_miss_ratio);
     }
 
     private static Map<Task, Integer> getTurnaroundTimes(List<TCB> tasks) {
-        Map<Task, Integer> ans = new HashMap<>();
+        Map<Task, Integer> ans = new LinkedHashMap<>();
 
         for (TCB t : tasks) {
             ans.put(t, (t.isFinished() ? t.getTurnaround_time() : -1));
@@ -60,7 +62,7 @@ public class Stats {
     }
 
     private static Map<Task, Integer> getWaitingTimes(List<TCB> tasks) {
-        Map<Task, Integer> ans = new HashMap<>();
+        Map<Task, Integer> ans = new LinkedHashMap<>();
 
         for (TCB t : tasks) {
             ans.put(t, t.getWaiting_time());
@@ -75,7 +77,9 @@ public class Stats {
 
             sum += val;
         }
-        if (size == 0) {return 0;}
+        if (size == 0) {
+            return 0;
+        }
         return (float) sum / size;
     }
 
@@ -107,5 +111,42 @@ public class Stats {
             }
         }
         return ans;
+    }
+
+    private static List<Task> missedDeadlines(List<TCB> tasks) {
+        List<Task> ans = new ArrayList<>();
+        for (TCB task : tasks) {
+            if (task.getDeadline_miss_instant() != -1) {
+                ans.add(task);
+            }
+        }
+        return ans;
+    }
+
+    private static LinkedHashMap<Integer, Float> calculateDeadlineMissRatio(ArrayList<TCB> tasks) {
+        Map<Integer, Integer> totalActivations = new HashMap<>();
+        Map<Integer, Integer> missedDeadlines = new HashMap<>();
+
+        for (TCB t : tasks) {
+            int id = t.getId();
+
+            totalActivations.put(id, totalActivations.getOrDefault(id, 0) + 1);
+
+            if (t.getDeadline_miss_instant() != -1) {
+                missedDeadlines.put(id, missedDeadlines.getOrDefault(id, 0) + 1);
+            }
+        }
+        
+        LinkedHashMap<Integer, Float> missRatios = new LinkedHashMap<>();
+        for (Map.Entry<Integer, Integer> entry : totalActivations.entrySet()) {
+            int id = entry.getKey();
+            int total = entry.getValue();
+            int missed = missedDeadlines.getOrDefault(id, 0);
+
+            float ratio = (float) missed / total;
+            missRatios.put(id, ratio);
+        }
+
+        return missRatios;
     }
 }

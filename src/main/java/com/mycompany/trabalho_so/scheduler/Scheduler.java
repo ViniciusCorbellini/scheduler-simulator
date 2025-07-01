@@ -112,7 +112,7 @@ public abstract class Scheduler {
     }
 
     protected void checkIfFinished(TCB current) {
-        if (current.isFinished()) {
+        if (current != null && current.isFinished()) {
             LOG.log(Level.INFO, String.format("Task finished -> id: %d\n", current.getId()));
             LOG.log(Level.INFO, String.format("Adding task to finished and removing it from CPU-> id: %d\n", current.getId()));
 
@@ -126,6 +126,14 @@ public abstract class Scheduler {
         tasks.forEach(
                 t -> t.setDeadline(t.getPeriod_time())
         );
+    }
+
+    protected void checkForDeadlineMiss(TCB task, int currentTime) {
+        if (task.getAbolute_deadline() <= currentTime && !task.isFinished()) {
+            LOG.log(Level.WARNING, String.format("Deadline missed -> Task id: %d, at time: %d\n", task.getId(), currentTime));
+            task.setDeadline_miss_instant(currentTime);
+            cpu.setCurrentTask(null);
+        }
     }
 
     // ===== Atributos
