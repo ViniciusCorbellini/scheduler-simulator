@@ -23,7 +23,7 @@ public class RM extends Scheduler {
 
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        LOG.log(Level.INFO, "Starting simulation!\n");
+        LOG.log(Level.INFO, "Starting simulation - > RM!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 

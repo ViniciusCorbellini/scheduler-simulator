@@ -1,11 +1,8 @@
 package com.mycompany.trabalho_so.scheduler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.trabalho_so.model.simulation.SimulationConfig;
 import com.mycompany.trabalho_so.model.simulation.SimulationResult;
 import com.mycompany.trabalho_so.model.task.TCB;
-import com.mycompany.trabalho_so.model.task.Task;
 import com.mycompany.trabalho_so.queues.readyqueue.ReadyQueue;
 import static com.mycompany.trabalho_so.scheduler.Scheduler.LOG;
 import com.mycompany.trabalho_so.stats.Stats;
@@ -17,15 +14,15 @@ import java.util.logging.Level;
  *
  * @author manoCorbas
  */
-public class SRTF extends Scheduler{
+public class SRTF extends Scheduler {
 
     public SRTF() {
         super(new ReadyQueue(Comparator.comparing(TCB::getComp_time_remaining)));
     }
-    
+
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        LOG.log(Level.INFO, "Starting simulation!\n");
+        LOG.log(Level.INFO, "Starting simulation - > SRTF!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 
@@ -52,7 +49,7 @@ public class SRTF extends Scheduler{
 
             LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()));
             cpu.compute(current, 1, time);
-            
+
             super.checkIfFinished(current);
             super.preemptiveRemoval();
             time++;

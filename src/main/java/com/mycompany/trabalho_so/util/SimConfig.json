@@ -1,6 +1,6 @@
 {
-    "simulation_time": 33,
-    "scheduler_name": "RM",
+    "simulation_time": 17,
+    "scheduler_name": "FIFO",
     "tasks_number": 4,
     "tasks": [
         {

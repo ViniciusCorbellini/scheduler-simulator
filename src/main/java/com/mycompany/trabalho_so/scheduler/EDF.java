@@ -23,7 +23,7 @@ public class EDF extends Scheduler {
 
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        LOG.log(Level.INFO, "Starting simulation!\n");
+        LOG.log(Level.INFO, "Starting simulation -> EDF!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 

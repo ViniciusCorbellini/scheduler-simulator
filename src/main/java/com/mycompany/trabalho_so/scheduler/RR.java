@@ -1,12 +1,10 @@
 package com.mycompany.trabalho_so.scheduler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.trabalho_so.model.simulation.SimulationConfig;
 import com.mycompany.trabalho_so.model.simulation.SimulationResult;
 import com.mycompany.trabalho_so.model.task.TCB;
-import com.mycompany.trabalho_so.model.task.Task;
 import com.mycompany.trabalho_so.queues.readyqueue.ReadyQueue;
+import static com.mycompany.trabalho_so.scheduler.Scheduler.LOG;
 import com.mycompany.trabalho_so.stats.Stats;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,13 +15,14 @@ import java.util.logging.Level;
  * @author manoCorbas
  */
 public class RR extends Scheduler {
+
     public RR() {
         super(new ReadyQueue(new LinkedList<TCB>()));
     }
 
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        LOG.log(Level.INFO, "Starting simulation!\n");
+        LOG.log(Level.INFO, "Starting simulation - > RR!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 
@@ -50,7 +49,7 @@ public class RR extends Scheduler {
 
             LOG.log(Level.INFO, String.format("Computing task -> id: %d, ct remaining: %d, qt remaining: %d\n", current.getId(), current.getComp_time_remaining(), current.getQuantum_time_remaining()));
             cpu.compute(current, 1, time);
-            
+
             current.decrementQuantumRemaining();
             checkQuantumTime(current);
 
@@ -66,13 +65,13 @@ public class RR extends Scheduler {
             LOG.log(Level.INFO, String.format("Quantum time ended, removing task from CPU -> task id: %d\n", current.getId()));
             cpu.setCurrentTask(null);
             current.resetQuantumTime();
-            
+
             //Garante que tarefas cujo qt acabou mas ainda nao terminaram seu ct vao para a rq
-            if(!current.isFinished()){ 
+            if (!current.isFinished()) {
                 LOG.log(Level.INFO, String.format("Task not finished yet, adding it back to rq- > task id: %d\n", current.getId()));
                 super.rq.addTask(current);
             }
-        } else{
+        } else {
             LOG.log(Level.INFO, String.format(
                     "Quantum time did not end, keeping task in cpu -> task id: %d, ct remaining: %d\n", current.getId(), current.getComp_time_remaining()
             ));

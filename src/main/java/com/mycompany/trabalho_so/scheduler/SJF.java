@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.mycompany.trabalho_so.scheduler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.trabalho_so.model.simulation.SimulationConfig;
 import com.mycompany.trabalho_so.model.simulation.SimulationResult;
 import com.mycompany.trabalho_so.model.task.TCB;
@@ -21,16 +14,15 @@ import java.util.logging.Level;
  *
  * @author manoCorbas
  */
-public class SJF extends Scheduler{
+public class SJF extends Scheduler {
 
     public SJF() {
         super(new ReadyQueue(Comparator.comparing(Task::getComputation_time)));
     }
-    
-    //TODO: debug
+
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        LOG.log(Level.INFO, "Starting simulation!\n");
+        LOG.log(Level.INFO, "Starting simulation -> SJF!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 

@@ -1,18 +1,14 @@
 package com.mycompany.trabalho_so.scheduler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.trabalho_so.model.simulation.SimulationConfig;
 import com.mycompany.trabalho_so.model.simulation.SimulationResult;
 import com.mycompany.trabalho_so.model.task.TCB;
-import com.mycompany.trabalho_so.model.task.Task;
 import com.mycompany.trabalho_so.queues.readyqueue.ReadyQueue;
+import static com.mycompany.trabalho_so.scheduler.Scheduler.LOG;
 import com.mycompany.trabalho_so.stats.Stats;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,15 +16,13 @@ import java.util.logging.Logger;
  */
 public class FCFS extends Scheduler {
 
-    private static final Logger LOG = Logger.getLogger(FCFS.class.getName());
-
     public FCFS() {
         super(new ReadyQueue(new LinkedList<>()));
     }
 
     @Override
     public SimulationResult simulate(SimulationConfig config) {
-        LOG.log(Level.INFO, "Starting simulation!\n");
+        LOG.log(Level.INFO, "Starting simulation - > FCFS!\n");
         LOG.log(Level.INFO, "Parsing tasks into TCB's and adding them to the task list\n");
         ArrayList<TCB> tasks = parseTasksIntoTCBs(config);
 
