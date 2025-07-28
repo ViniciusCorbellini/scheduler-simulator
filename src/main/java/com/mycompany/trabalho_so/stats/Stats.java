@@ -21,13 +21,12 @@ public class Stats {
         float utilization = (float) cpu.getUtilization_time() / time;
 
         Map<TCB, Integer> turnaround_times = getTurnaroundTimes(finished);
-        float turnaround_time_avg = calculateTATavg(turnaround_times);
+        Map<Integer, Float> tasks_tatAvg = calculateAvgTATById(turnaround_times);
+        float turnaround_time_avg = calculateTATavg(tasks_tatAvg);
 
         Map<TCB, Integer> waiting_times = getWaitingTimes(finished);
-        float waiting_time_avg = calculateWTavg(waiting_times);
-
-        Map<Integer, Float> tasks_tatAvg = calculateAvgTATById(turnaround_times);
         Map<Integer, Float> tasks_wtAvg = calculateWTavgById(waiting_times);
+        float waiting_time_avg = calculateWTavg(tasks_wtAvg);
 
         int id_highest_wt_avg = getHighestWt(tasks_wtAvg);
         int id_lowest_wt_avg = getLowestWt(tasks_wtAvg);
@@ -55,26 +54,29 @@ public class Stats {
         Map<TCB, Integer> ans = new LinkedHashMap<>();
 
         for (TCB t : tasks) {
-            ans.put(t, (t.isFinished() ? t.getTurnaround_time() : -1));
+            for (TCB instance : t.getInstances()) {
+                if (!instance.isFinished()) {
+                    continue;
+                }
+                ans.put(instance, instance.getTurnaround_time());
+            }
         }
         return ans;
     }
 
-    private static float calculateTATavg(Map<TCB, Integer> turnaround_times) {
-        int count = 0, sum = 0;
-
-        for (Map.Entry<TCB, Integer> entry : turnaround_times.entrySet()) {
-            int val = entry.getValue();
-
-            if (val != -1) {
-                count++;
-                sum += val;
-            }
-        }
-        if (count == 0) {
+    private static float calculateTATavg(Map<Integer, Float> tasks_tatAvg) {
+        int n = tasks_tatAvg.size();
+        if (n == 0) {
             return 0;
         }
-        return (float) sum / count;
+
+        float sum = 0;
+        for (Map.Entry<Integer, Float> entry : tasks_tatAvg.entrySet()) {
+            Float tat_avg = entry.getValue();
+
+            sum += tat_avg;
+        }
+        return sum / n;
     }
 
     private static Map<Integer, Float> calculateAvgTATById(Map<TCB, Integer> turnaround_times) {
@@ -91,7 +93,7 @@ public class Stats {
             }
         }
 
-        Map<Integer, Float> avgTatById = new LinkedHashMap<>(); // Mantém a ordem de inserção, se quiser ordem por ID, podemos ordenar depois
+        Map<Integer, Float> avgTatById = new LinkedHashMap<>();
         for (Map.Entry<Integer, List<Integer>> entry : tatGroupedById.entrySet()) {
             List<Integer> tatList = entry.getValue();
             float sum = 0;
@@ -108,22 +110,29 @@ public class Stats {
         Map<TCB, Integer> ans = new LinkedHashMap<>();
 
         for (TCB t : tasks) {
-            ans.put(t, t.getWaiting_time());
+            for (TCB instance : t.getInstances()) {
+                if (!instance.isFinished()) {
+                    continue;
+                }
+                ans.put(instance, instance.getWaiting_time());
+            }
         }
         return ans;
     }
 
-    private static float calculateWTavg(Map<TCB, Integer> waiting_times) {
-        int sum = 0, size = waiting_times.size();
-        for (Map.Entry<TCB, Integer> entry : waiting_times.entrySet()) {
-            int val = entry.getValue();
-
-            sum += val;
-        }
-        if (size == 0) {
+    private static float calculateWTavg(Map<Integer, Float> tasks_wtAvg) {
+        int n = tasks_wtAvg.size();
+        if (n == 0) {
             return 0;
         }
-        return (float) sum / size;
+
+        float sum = 0;
+        for (Map.Entry<Integer, Float> entry : tasks_wtAvg.entrySet()) {
+            Float tat_avg = entry.getValue();
+
+            sum += tat_avg;
+        }
+        return sum / n;
     }
 
     private static Map<Integer, Float> calculateWTavgById(Map<TCB, Integer> waiting_times) {
@@ -175,8 +184,10 @@ public class Stats {
     private static List<TCB> checkForStarvation(List<TCB> tasks) {
         List<TCB> ans = new ArrayList<>();
         for (TCB task : tasks) {
-            if (task.isInStarvation()) {
-                ans.add(task);
+            for (TCB instance : task.getInstances()) {
+                if (instance.isInStarvation()) {
+                    ans.add(instance);
+                }
             }
         }
         return ans;
@@ -185,8 +196,10 @@ public class Stats {
     private static List<TCB> missedDeadlines(List<TCB> tasks) {
         List<TCB> ans = new ArrayList<>();
         for (TCB task : tasks) {
-            if (task.getDeadline_miss_instant() != -1) {
-                ans.add(task);
+            for (TCB instance : task.getInstances()) {
+                if (instance.missedDeadline()) {
+                    ans.add(instance);
+                }
             }
         }
         return ans;
@@ -199,11 +212,11 @@ public class Stats {
         for (TCB t : tasks) {
             int id = t.getId();
 
-            if (t.getFinish_time() != -1 ||  t.getDeadline_miss_instant() == -1) {
+            if (t.isFinished() || !t.missedDeadline()) {
                 totalActivations.put(id, totalActivations.getOrDefault(id, 0) + 1);
             }
 
-            if (t.getDeadline_miss_instant() != -1) {
+            if (t.missedDeadline()) {
                 missedDeadlines.put(id, missedDeadlines.getOrDefault(id, 0) + 1);
             }
         }

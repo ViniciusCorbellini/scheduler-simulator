@@ -41,48 +41,37 @@ public abstract class Scheduler {
     }
 
     protected void checkForOffsetsAndPeriods(ArrayList<TCB> tasks, int time) {
-        //Um arrayList local da funcao para ministrar 
-        //novas instancias de periodos de tasks
-        ArrayList<TCB> newInstances = new ArrayList<>();
-
         //Itera sobre as tasks para verificar se alguma deve entrar na fila
         for (TCB t : tasks) {
-            //Evita que instancias desnecessarias sejam criadas
-            if (t.getPeriod_time() == -1) {
-                continue;
-            }
             if (time == t.getOffset()) {
                 LOG.log(Level.INFO, String.format("Task offset -> instant: %d, task id: %d\n", t.getOffset(), t.getId()));
                 rq.addTask(t);
+                t.getInstances().add(t);
                 continue;
             }
+
             if ((time - t.getOffset()) % t.getPeriod_time() == 0) {
                 LOG.log(Level.INFO, String.format("Task period -> task id: %d\n", t.getId()));
                 /**
-                 * Ministra uma nova instancia de uma task: O arrayList Adciona
-                 * uma nova TCB, passando como parametro do construtor da TCB o
-                 * id da task, o time, ct, -1, quantum e deadline. (Obs: o -1
-                 * impede que seja criada uma nova instancia de uma task com
-                 * base no periodo de uma instancia de uma task já existente)
-                 * Dessa maneira, é possível usar todos esses dados da task sem
-                 * interferir Nos atributos da TCB
+                 * Ministra uma nova instancia de uma task: A task Base (t)
+                 * Adiciona uma nova TCB, passando como parametro do construtor
+                 * da TCB o id da task, o instante atual, ct, period, quantum e
+                 * deadline. Dessa maneira, a nova instancia herda os atributos
+                 * reutilizaveis da task base
                  */
                 TCB newInstance = new TCB(t.getId(),
                         new Task(
                                 time, //O instante de entrada na RQ (offset)
                                 t.getComputation_time(),
-                                -1,
+                                t.getPeriod_time(),
                                 t.getQuantum(),
                                 t.getDeadline()
                         )
                 );
-                newInstances.add(newInstance);
+                t.getInstances().add(newInstance);
                 rq.addTask(newInstance);
             }
         }
-        //Adiciona as novas instancias ao grupo de tasks do scheduler
-        //Facilitando, assim, o calculo dos resultados
-        tasks.addAll(newInstances);
     }
 
     protected void updateWaitingTimes() {
@@ -93,9 +82,7 @@ public abstract class Scheduler {
     }
 
     protected void getTaskFromRQ() {
-        if (cpu.isBusy()) {
-            return;
-        }
+        if (cpu.isBusy()) return;
 
         LOG.log(Level.INFO, "Selecting task in RQ\n");
         cpu.setCurrentTask(rq.pollTask());
@@ -104,9 +91,8 @@ public abstract class Scheduler {
     //Pega a task da cpu, coloca ela na rq e remove ela da cpu
     protected void preemptiveRemoval() {
         TCB current = cpu.getCurrentTask();
-        if (current == null) {
-            return;
-        }
+        
+        if (current == null) return;
 
         rq.addTask(current);
         cpu.setCurrentTask(null);
@@ -122,7 +108,7 @@ public abstract class Scheduler {
         }
     }
 
-    //Funcao necessaria para RM e EDFs, no qual o periodo deve, obrigatoriamente ser igual ao Deadline
+    //Funcao necessaria para RM e EDFs, no qual o periodo deve ser igual ao Deadline
     protected void handleDeadlineCoherence(ArrayList<TCB> tasks) {
         tasks.forEach(
                 t -> t.setDeadline(t.getPeriod_time())

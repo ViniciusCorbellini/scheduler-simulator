@@ -1,78 +1,94 @@
 package com.mycompany.trabalho_so.model.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author manoCorbas
  */
 public class TCB extends Task { //Salva o contexto da task
 
-    private int id;    
-    private int comp_time_remaining;    
+    private int id;
+    private int comp_time_remaining;
     private int quantum_time_remaining;
     private int waiting_time;
     private int finish_time;
-    private final int abolute_deadline;
     private int deadline_miss_instant;
-    
+    private List<TCB> instances;
+
     //===== metodos do TCB
     /**
      * metodo que diminui o comp_time_remaining com base em um determinado tempo
-     * 
+     *
      * @param time tempo que o cpu executou a tarefa
      */
-    public void compute(int time){
-        if(time >= comp_time_remaining) this.comp_time_remaining = 0;
-        else this.comp_time_remaining -= time;
+    public void compute(int time) {
+        if (time >= comp_time_remaining) {
+            this.comp_time_remaining = 0;
+        } else {
+            this.comp_time_remaining -= time;
+        }
     }
-    
+
     public int getTurnaround_time() {
         return finish_time - super.offset;
     }
-    
+
     /**
-     * metodo que incrementa o waiting time em 1
-     * util para as tasks na RQ
-     * 
+     * metodo que incrementa o waiting time em 1 util para as tasks na RQ
+     *
      */
-    public void incrementWaitingTime(){
+    public void incrementWaitingTime() {
         this.waiting_time++;
     }
-    
+
     /**
      * metodo para descobrir se a tarefa ja foi executada
-     * 
+     *
      * @return true se o tempo restante de computacao for igual a 0
      */
     public boolean isFinished() {
         return this.comp_time_remaining == 0;
     }
-    
+
     /**
      * metodo para descobrir se a tarefa sofreu starvation
-     * 
-     * @return true se o tempo de excecucao restante for igual ao tempo inicial 
-     * de CT (tarefas que nao entraram na CPU possuirao CTs iguais ao CT restante)
+     *
+     * @return true se o tempo de excecucao restante for igual ao tempo inicial
+     * de CT (tarefas que nao entraram na CPU possuirao CTs iguais ao CT
+     * restante)
      */
-    public boolean isInStarvation(){
+    public boolean isInStarvation() {
         return this.comp_time_remaining == computation_time;
     }
-    
-    public boolean quantumTimeFinished(){
+
+    /**
+     * metodo para descobrir se a tarefa perdeu o seu deadline
+     *
+     * @return true se o instante de perda de deadline possuir algum valor
+     * diferente de -1 (perdeu o seu deadline)
+     */
+    public boolean missedDeadline() {
+        return this.deadline_miss_instant != -1;
+    }
+
+    public boolean quantumTimeFinished() {
         return this.quantum_time_remaining == 0;
     }
-    
-    public void decrementQuantumRemaining(){
+
+    public void decrementQuantumRemaining() {
         this.quantum_time_remaining--;
     }
-    
-    public void resetQuantumTime(){
+
+    public void resetQuantumTime() {
         this.quantum_time_remaining = quantum;
     }
 
     final public int getAbolute_deadline() {
         return super.getOffset() + super.getDeadline();
     }
-    
+
     //===== Construtor
     public TCB(int id, Task t) {
         super(t.offset, t.computation_time, t.period_time, t.quantum, t.deadline);
@@ -81,8 +97,8 @@ public class TCB extends Task { //Salva o contexto da task
         this.quantum_time_remaining = t.quantum;
         this.waiting_time = 0;
         this.finish_time = -1;
-        this.abolute_deadline = getAbolute_deadline();
         this.deadline_miss_instant = -1;
+        this.instances = new ArrayList<>();
     }
 
     //===== Getters, setters  e toString()
@@ -90,16 +106,16 @@ public class TCB extends Task { //Salva o contexto da task
     public String toString() {
         return "TCB{"
                 + "id: " + id
-                + ", comp_time_remaining: " + comp_time_remaining 
-                + ", waiting_time: " + waiting_time 
-                + ", finish_time: " + finish_time 
-                + ", offset: " + offset 
-                + ", computation_time: " + computation_time 
-                + ", quantum: " + quantum 
-                + ", period_time: " + period_time 
+                + ", comp_time_remaining: " + comp_time_remaining
+                + ", waiting_time: " + waiting_time
+                + ", finish_time: " + finish_time
+                + ", offset: " + offset
+                + ", computation_time: " + computation_time
+                + ", quantum: " + quantum
+                + ", period_time: " + period_time
                 + '}';
     }
-    
+
     public int getId() {
         return id;
     }
@@ -107,7 +123,7 @@ public class TCB extends Task { //Salva o contexto da task
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public int getComp_time_remaining() {
         return comp_time_remaining;
     }
@@ -115,7 +131,7 @@ public class TCB extends Task { //Salva o contexto da task
     public void setComp_time_remaining(int comp_time_remaining) {
         this.comp_time_remaining = comp_time_remaining;
     }
-    
+
     public int getQuantum_time_remaining() {
         return quantum_time_remaining;
     }
@@ -146,5 +162,13 @@ public class TCB extends Task { //Salva o contexto da task
 
     public void setDeadline_miss_instant(int deadline_miss_instant) {
         this.deadline_miss_instant = deadline_miss_instant;
+    }
+
+    public List<TCB> getInstances() {
+        return instances;
+    }
+
+    public void setInstances(List<TCB> instances) {
+        this.instances = instances;
     }
 }

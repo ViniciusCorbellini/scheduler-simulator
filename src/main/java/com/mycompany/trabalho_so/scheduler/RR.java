@@ -29,7 +29,7 @@ public class RR extends Scheduler {
         //Tempo inicial do loop
         int time = 0;
         LOG.log(Level.INFO, "Starting loop!\n");
-        while (time <= config.getSimulation_time()) {
+        while (time < config.getSimulation_time()) {
             LOG.log(Level.INFO, String.format("Simulation -> Instant: %d\n", time));
 
             LOG.log(Level.INFO, "Checking for task offsets and periods\n");
@@ -57,7 +57,7 @@ public class RR extends Scheduler {
             time++;
         }
         LOG.log(Level.INFO, "Loop finished!\n");
-        return Stats.calculate(tasks, super.cpu, config.getSimulation_time() + 1, super.finished);
+        return Stats.calculate(tasks, super.cpu, config.getSimulation_time(), super.finished);
     }
 
     private void checkQuantumTime(TCB current) {

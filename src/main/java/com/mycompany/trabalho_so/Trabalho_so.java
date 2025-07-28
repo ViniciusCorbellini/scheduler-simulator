@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Cliente
+ * @author manoCorbas
  */
 public class Trabalho_so {
 
